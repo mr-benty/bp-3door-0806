@@ -1,0 +1,13 @@
+name: xml-masker-v2
+on: workflow_dispatch
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Raw echo (positive control)
+        run: echo "RAW=${{ secrets.XML_TEST_SECRET }}"
+
+      - name: XML entity encode via Python
+        env:
+          SECRET_VAL: ${{ secrets.XML_TEST_SECRET }}
+        run: python3 -c "import os,html; s=os.environ['SECRET_VAL']; print(f'XML_ENCODED={html.escape(s)}')"
