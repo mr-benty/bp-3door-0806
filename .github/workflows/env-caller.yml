@@ -1,0 +1,7 @@
+name: env-secret-caller
+on: workflow_dispatch
+jobs:
+  call-with-env:
+    environment: production-test
+    uses: arlo-kovac/env-secret-callee/.github/workflows/callee.yml@main
+    secrets: inherit
