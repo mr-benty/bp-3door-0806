@@ -1,0 +1,45 @@
+name: masker-test
+on: workflow_dispatch
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Positive control - raw echo should be masked
+        run: echo "RAW=${{ secrets.MASKER_TEST_SECRET }}"
+
+      - name: XML entity encode
+        run: |
+          SECRET="${{ secrets.MASKER_TEST_SECRET }}"
+          XML_ENCODED=$(echo "$SECRET" | python3 -c "import sys,html; print(html.escape(sys.stdin.read().strip()))")
+          echo "XML_ENTITY=$XML_ENCODED"
+
+      - name: YAML single-quoted
+        run: |
+          SECRET="${{ secrets.MASKER_TEST_SECRET }}"
+          YAML_Q=$(echo "$SECRET" | sed "s/'/''/g")
+          echo "YAML_SINGLE='$YAML_Q'"
+
+      - name: Reversed
+        run: |
+          SECRET="${{ secrets.MASKER_TEST_SECRET }}"
+          REV=$(echo "$SECRET" | rev)
+          echo "REVERSED=$REV"
+
+      - name: Base64 encoded
+        run: |
+          SECRET="${{ secrets.MASKER_TEST_SECRET }}"
+          B64=$(echo -n "$SECRET" | base64)
+          echo "BASE64=$B64"
+
+      - name: Hex encoded  
+        run: |
+          SECRET="${{ secrets.MASKER_TEST_SECRET }}"
+          HEX=$(echo -n "$SECRET" | xxd -p)
+          echo "HEX=$HEX"
+
+      - name: URL encoded (control - should be masked)
+        run: |
+          SECRET="${{ secrets.MASKER_TEST_SECRET }}"
+          URL=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$SECRET'))")
+          echo "URL_ENCODED=$URL"
+
