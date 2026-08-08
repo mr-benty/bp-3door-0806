@@ -4,10 +4,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Raw echo (positive control)
-        run: echo "RAW=${{ secrets.XML_TEST_SECRET }}"
-
-      - name: XML entity encode via Python
+      - name: XML entity encode via env
         env:
-          SECRET_VAL: ${{ secrets.XML_TEST_SECRET }}
-        run: python3 -c "import os,html; s=os.environ['SECRET_VAL']; print(f'XML_ENCODED={html.escape(s)}')"
+          S: ${{ secrets.XML_TEST_SECRET }}
+        run: python3 -c "import os,html; s=os.environ['S']; print(f'XML_ENCODED={html.escape(s)}')"
